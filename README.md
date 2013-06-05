@@ -20,3 +20,5 @@ List of modifications to a regular rails app:
   * Sets up guard and spork to run off the bat.
   * Converts application.html.erb to application.html.haml.
   * Sets up gemfile with some common gems.
+
+Also I have provided a sample\_app that was generated through this template.

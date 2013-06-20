@@ -1,5 +1,6 @@
 CTA Rails Application Template
 ============
+This template is only tested and verified with Rails 3.2.\*
 
 Simple template for customizing the rails environment
 

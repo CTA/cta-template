@@ -2,22 +2,17 @@
 
 #  sets up gemfile
 gem 'pg'
-gem 'haml-rails', '~> 0.4'
+#gem 'haml-rails', '~> 0.4'
 gem 'annotate', '~> 2.5.0'
 
 gem_group :test do
   gem 'rspec', '~> 2.13.0'
   gem 'rspec-rails', '~> 2.13.0'
   gem 'rspec-spies', '~> 2.1.4'
-  gem 'guard-rspec', '~> 3.0.1'
-  gem 'guard-spork', '~> 1.5.0'
   gem 'capybara', '~> 2.1.0'
-  gem 'spork', '~> 1.0.0.rc3'
   gem 'factory_girl_rails', '~> 4.2.1'
   gem 'shoulda-matchers', '~> 2.1.0'
   gem 'database_cleaner', '~> 1.0.1'
-  gem 'rb-fsevent', '~> 0.9.2'
-  gem 'growl', '~> 1.0.3'
 end
 
 gem_group :development do
@@ -29,12 +24,12 @@ run 'rails generate rspec:install'
 run 'rm -rf test/'
 
 #  html2haml on application.html.erb
-run 'gem install html2haml' unless `gem list`.lines.grep(/^html2haml \(.*\)/)
-run 'html2haml app/views/layouts/application.html.erb app/views/layouts/application.html.haml'
-run 'rm app/views/layouts/application.html.erb'
+#run 'gem install html2haml' unless `gem list`.lines.grep(/^html2haml \(.*\)/)
+#run 'html2haml app/views/layouts/application.html.erb app/views/layouts/application.html.haml'
+#run 'rm app/views/layouts/application.html.erb'
 
 #  guard and spork
-run 'guard init'
+#run 'guard init'
 
 #  database.yml and database.yml.example
 run 'rm config/database.yml'
@@ -176,73 +171,55 @@ CODE
 #  spec\_helper.rb
 run 'rm -rf spec/spec_helper.rb'
 file 'spec/spec_helper.rb', <<-CODE
+
 require 'rubygems'
-require 'spork'
-#uncomment the following line to use spork with the debugger
-#require 'spork/ext/ruby-debug'
 
-Spork.prefork do
-  # Loading more in this block will cause your tests to run faster. However,
-  # if you change any configuration or code from libraries loaded here, you'll
-  # need to restart spork for it take effect.
+# This file is copied to spec/ when you run 'rails generate rspec:install'
+ENV["RAILS_ENV"] ||= 'test'
+require File.expand_path("../../config/environment", __FILE__)
+require 'rspec/rails'
+require 'rspec/autorun'
+require 'capybara/rspec'
+require 'database_cleaner'
 
+RSpec.configure do |config|
+  # ## Mock Framework
+  #
+  # If you prefer to use mocha, flexmock or RR, uncomment the appropriate line:
+  #
+  # config.mock_with :mocha
+  # config.mock_with :flexmock
+  # config.mock_with :rr
+  config.mock_with :rspec
 
-  # This file is copied to spec/ when you run 'rails generate rspec:install'
-  ENV["RAILS_ENV"] ||= 'test'
-  require File.expand_path("../../config/environment", __FILE__)
-  require 'rspec/rails'
-  require 'rspec/autorun'
-  require 'capybara/rails'
-  require 'capybara/rspec'
-  require 'database_cleaner'
-  require 'rspec-spies'
+  # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
 
-  # Requires supporting ruby files with custom matchers and macros, etc,
-  # in spec/support/ and its subdirectories.
-  Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
-
-  RSpec.configure do |config|
-    # ## Mock Framework
-    #
-    # If you prefer to use mocha, flexmock or RR, uncomment the appropriate line:
-    #
-    # config.mock_with :mocha
-    # config.mock_with :flexmock
-    # config.mock_with :rr
-    config.mock_with :rspec
-
-    # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-    config.fixture_path = "\#{::Rails.root}/spec/fixtures"
-    config.filter_run focus: true
-    config.run_all_when_everything_filtered = true
-
-    # If you're not using ActiveRecord, or you'd prefer not to run each of your
-    # examples within a transaction, remove the following line or assign false
-    # instead of true.
-    config.use_transactional_fixtures = false    
-
-    config.before(:suite) { DatabaseCleaner.strategy = :truncation } 
-
-    config.before(:each) { DatabaseCleaner.start }
-
-    config.after(:each) { DatabaseCleaner.clean }
-
-    # If true, the base class of anonymous controllers will be inferred
-    # automatically. This will be the default behavior in future versions of
-    # rspec-rails.
-    config.infer_base_class_for_anonymous_controllers = false
-
-    # Run specs in random order to surface order dependencies. If you find an
-    # order dependency and want to debug it, you can fix the order by providing
-    # the seed, which is printed after each run.
-    #     --seed 1234
-    config.order = "random"
+  # If you're not using ActiveRecord, or you'd prefer not to run each of your
+  # examples within a transaction, remove the following line or assign false
+  # instead of true.
+  
+  #Capybara.javascript_driver = :webkit
+  config.use_transactional_fixtures = false
+  config.before(:suite)  do
+    DatabaseCleaner[:active_record].strategy = :truncation
+    DatabaseCleaner.clean_with(:truncation)
   end
-end
 
-Spork.each_run do
-  # This code will be run each time you run your specs.
-  FactoryGirl.reload
+  config.before(:each) { DatabaseCleaner.start }
+  config.after(:suite) { DatabaseCleaner.clean }
+  config.after(:each) { DatabaseCleaner.clean }
+  
+
+  # If true, the base class of anonymous controllers will be inferred
+  # automatically. This will be the default behavior in future versions of
+  # rspec-rails.
+  config.infer_base_class_for_anonymous_controllers = false
+
+  # Run specs in random order to surface order dependencies. If you find an
+  # order dependency and want to debug it, you can fix the order by providing
+  # the seed, which is printed after each run.
+  #     --seed 1234
+  config.order = "random"
 end
 CODE
 

@@ -16,9 +16,8 @@ List of modifications to a regular rails app:
   * Changes the database.yml to postgres defaults and creates a database.yml.example.
   * Adds a .gitignore with more common files.
   * Adds test environment generator lines to config/application.rb.
-  * Adds custom spec\_helper.rb file with spork methods.
+  * Adds custom spec\_helper.rb file.
   * Installs Rspec instead of Test::Unit.
-  * Sets up guard and spork to run off the bat.
   * Converts application.html.erb to application.html.haml.
   * Sets up gemfile with some common gems.
 

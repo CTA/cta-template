@@ -28,9 +28,6 @@ run 'rm -rf test/'
 #run 'html2haml app/views/layouts/application.html.erb app/views/layouts/application.html.haml'
 #run 'rm app/views/layouts/application.html.erb'
 
-#  guard and spork
-#run 'guard init'
-
 #  database.yml and database.yml.example
 run 'rm config/database.yml'
 file 'config/database.yml', <<-CODE
